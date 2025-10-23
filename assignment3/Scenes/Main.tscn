@@ -1,32 +1,65 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=11 format=3]
 
-[ext_resource path="res://assignment3/Scripts/Player.cs" type="Script" id="1"]
-[ext_resource path="res://assignment3/Scripts/Flock.cs" type="Script" id="2"]
-[ext_resource path="res://assignment3/Scenes/Boid.tscn" type="PackedScene" id="3"]
-[ext_resource path="res://assignment3/Scripts/FlockTrigger.cs" type="Script" id="4"]
+[ext_resource type="Script" path="res://src/GameManager.cs" id="1"]
+[ext_resource type="Script" path="res://src/Player.cs" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/Boid.tscn" id="3"]
+[ext_resource type="Script" path="res://src/BoidFlock.cs" id="4"]
+[ext_resource type="Script" path="res://src/EnemySpawner.cs" id="5"]
+[ext_resource type="Script" path="res://src/Door.cs" id="6"]
+[ext_resource type="Script" path="res://src/BackgroundFlock.cs" id="7"]
+[ext_resource type="Script" path="res://src/CircleSprite.cs" id="8"]
 
-[sub_resource type="CircleShape2D" id="1"]
-radius = 36.0
+[sub_resource type="RectangleShape2D" id="9"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="10"]
+radius = 8.0
 
 [node name="Main" type="Node2D"]
-
-[node name="Player" type="CharacterBody2D" parent="." groups=["player"]]
 script = ExtResource("1")
-position = Vector2(400, 280)
+
+[node name="Playfield" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.07, 0.10, 1.0)
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(480, 270)
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("2")
+
+[node name="PlayerVisual" type="Node2D" parent="Player"]
+script = ExtResource("8")
+
+[node name="PlayerCollision" type="CollisionShape2D" parent="Player"]
+shape = SubResource("10")
 
 [node name="Flock" type="Node2D" parent="."]
-script = ExtResource("2")
-BoidScene = ExtResource("3")
-PlayerPath = NodePath("../Player")
-Count = 60
-ChaseRadius = 240.0
-ChaseSeconds = 6.0
-SeekWeight = 1.2
-
-[node name="DoorTrigger" type="Area2D" parent="."]
+position = Vector2(200, 180)
 script = ExtResource("4")
-FlockPath = NodePath("../Flock")
-position = Vector2(720, 280)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorTrigger"]
-shape = SubResource("1")
+[node name="WaveFlock" type="Node2D" parent="."]
+visible = false
+script = ExtResource("4")
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("5")
+
+[node name="Door" type="Area2D" parent="."]
+position = Vector2(880, 500)
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("6")
+
+[node name="DoorSprite" type="ColorRect" parent="Door"]
+position = Vector2(-16, -16)
+size = Vector2(32, 32)
+color = Color(0.85, 0.25, 0.6, 1.0)
+
+[node name="DoorCollision" type="CollisionShape2D" parent="Door"]
+shape = SubResource("9")
+
+[node name="BackgroundFlock" type="Node2D" parent="."]
+z_index = -1
+script = ExtResource("7")
